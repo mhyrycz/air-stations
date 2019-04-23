@@ -1,10 +1,18 @@
 import React from 'react';
+import DonutChart from "react-svg-donut-chart";
 
 const WeatherOfStation = props => {
   const { temperature, aqi, humidity, airPressure } = props.stationData
+
+  const data = [
+    { value: 60, stroke: "#2f7d6d" }
+  ]
   
   return (
     <div className={props.className}>
+      <div className="circle">
+        <DonutChart height="500" data={data} />
+      </div>
       <div className="address">
         {props.label}
       </div>
@@ -14,7 +22,10 @@ const WeatherOfStation = props => {
       <div className="row">
         <div className="param">
           <div className="param2">
-            Temperatura [℃]
+            Temp.
+          </div>
+          <div className="param2">
+            [℃]
           </div>
           <div className="param2">
             {temperature}
@@ -22,7 +33,10 @@ const WeatherOfStation = props => {
         </div>
         <div className="param">
           <div className="param2">
-            Ciśnienie [hPa]
+            Ciśnienie
+          </div>
+          <div className="param2">
+            [hPa]
           </div>
           <div className="param2">
             {airPressure}
@@ -30,7 +44,10 @@ const WeatherOfStation = props => {
         </div>
         <div className="param">
           <div className="param2">
-            Wilgotność [%]
+            Wilgotność
+          </div>
+          <div className="param2">
+            [%]
           </div>
           <div className="param2">
             {humidity}

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import WeatherOfStation from './WeatherOfStation'
-// import DonutChart from "react-svg-donut-chart"
 import { config } from '../config.js'
 
 class Stations extends Component {
@@ -64,8 +63,6 @@ class Stations extends Component {
       }
     );
   }
-
-
 
   render() {
     const { firstStation, secondStation, thirdStation } = this.state
