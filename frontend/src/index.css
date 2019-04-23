@@ -1,0 +1,66 @@
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 3.2rem;
+  background: white;
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+.is-active {
+  font-weight: bold;
+}
+
+.station-column {
+  width: calc(99.6%/3);
+  height: 100%;
+}
+.vl {
+  width: calc(0.2%);
+  height: 100%;
+  background-color: black;
+}
+
+.address {
+  width: 100%;
+  height: calc(10%);
+}
+
+.aqi {
+  width: 100%;
+  height: 50%;
+  font-size: 16rem;
+}
+
+.row {
+  width: 100%;
+  height: 40%;
+}
+
+.stations {
+  display: flex;
+  height: 100vh;
+  margin:0;
+  overflow: auto;
+}
+
+.param {
+  display: inline-block;
+  width: calc(100%/3);
+  height: 100%;
+}
+.param2 {
+  display: flex;
+  width: 100%;
+  height: 50%;
+}
