@@ -5,30 +5,42 @@ html {
 body {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 3.2rem;
-  background: white;
+  background: #0b3048;
   margin: 0;
+  height: calc(100vh - 32px);
+  overflow: hidden;
+  color: white;
 }
 
-button {
-  cursor: pointer;
+#root {
+  height: 100%;
 }
 
-button:disabled {
-  cursor: default;
-}
-
-.is-active {
-  font-weight: bold;
+.stations {
+  display: flex;
+  height: 100%;
 }
 
 .station-column {
-  width: calc(99.6%/3);
+  width: calc(100%/3);
   height: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  margin: 8px;
+  background-color: #21485e;
 }
-.vl {
-  width: calc(0.2%);
-  height: 100%;
-  background-color: black;
+
+.station-column.left {
+  margin-right: 4px;
+}
+
+.station-column.middle {
+  margin-right: 4px;
+  margin-left: 4px;
+}
+
+.station-column.right {
+  margin-left: 4px;
 }
 
 .address {
@@ -45,13 +57,6 @@ button:disabled {
 .row {
   width: 100%;
   height: 40%;
-}
-
-.stations {
-  display: flex;
-  height: 100vh;
-  margin:0;
-  overflow: auto;
 }
 
 .param {

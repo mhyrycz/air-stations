@@ -4,7 +4,7 @@ const WeatherOfStation = props => {
   const { temperature, aqi, humidity, airPressure } = props.stationData
   
   return (
-    <div className="station-column">
+    <div className={props.className}>
       <div className="address">
         {props.label}
       </div>

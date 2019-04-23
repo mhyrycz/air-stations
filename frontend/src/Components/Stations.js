@@ -71,11 +71,9 @@ class Stations extends Component {
     const { firstStation, secondStation, thirdStation } = this.state
     return(
       <div className="stations">
-        <WeatherOfStation label={firstStation["address"]} stationData={firstStation["air"]}/>
-        <div className="vl"></div>
-        <WeatherOfStation label={secondStation["address"]} stationData={secondStation["air"]}/>
-        <div className="vl"></div>
-        <WeatherOfStation label={thirdStation["address"]} stationData={thirdStation["air"]}/>
+        <WeatherOfStation className="station-column left" label={firstStation["address"]} stationData={firstStation["air"]}/>
+        <WeatherOfStation className="station-column middle" label={secondStation["address"]} stationData={secondStation["air"]}/>
+        <WeatherOfStation className="station-column right" label={thirdStation["address"]} stationData={thirdStation["air"]}/>
       </div>
     )
   }
