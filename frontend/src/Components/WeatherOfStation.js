@@ -30,7 +30,7 @@ class WeatherOfStation extends React.Component {
     const { temperature, aqi, humidity, airPressure } = this.props.stationData
 
     const data = [
-      { value: 60, stroke: "#2f7d6d", strokeWidth: 2 }
+      { value: 60, stroke: aqi.color, strokeWidth: 2 }
     ]
 
     return (
@@ -43,7 +43,7 @@ class WeatherOfStation extends React.Component {
         </div>
         <div className="aqi">
           <div className="aqi-value ">
-            {aqi}
+            {aqi.value}
           </div>
         </div>
         <div className="row">

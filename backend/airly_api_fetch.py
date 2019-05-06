@@ -61,7 +61,9 @@ def get_air_params():
 
     for station in stations:
         measurements = requests.get('{}measurements/installation?installationId={}'.format(api_address, station["id"]), headers=headers).content
-        aqi = json.loads(measurements.decode("utf-8"))["current"]["indexes"][0]["value"]
+        aqi = json.loads(measurements.decode("utf-8"))["current"]["indexes"][0]
+        aqi_value = aqi["value"]
+        aqi_color = aqi["color"]
         otherParams = json.loads(measurements.decode("utf-8"))["current"]["values"] 
         address = station["address"]
         airPressure = next(param["value"] for param in otherParams if param["name"] == "PRESSURE") if otherParams else "unknown"
@@ -71,7 +73,10 @@ def get_air_params():
         station_data = {
             "address": address, 
             "air": {
-                "aqi": aqi,
+                "aqi": {
+                            "value": aqi_value,
+                            "color": aqi_color,
+                        },
                 "airPressure": airPressure,
                 "temperature": temperature,
                 "humidity": humidity,

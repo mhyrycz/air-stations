@@ -10,7 +10,10 @@ class Stations extends React.Component {
       firstStation: {
         address: "",
         air: { 
-          aqi: 0,
+          aqi: {
+            value: 0,
+            color: "green"
+          },
           airPressure: 0,
           temperature: 0,
           humidity:0,
@@ -19,7 +22,10 @@ class Stations extends React.Component {
       secondStation: {
         address: "",
         air: {
-          aqi: 0,
+          aqi: {
+            value: 0,
+            color: "green"
+          },
           airPressure: 0,
           temperature: 0,
           humidity: 0,
@@ -28,7 +34,10 @@ class Stations extends React.Component {
       thirdStation: {
         address: "",
         air: {
-          aqi: 0,
+          aqi: {
+            value: 0,
+            color: "green"
+          },
           airPressure: 0,
           temperature: 0,
           humidity: 0,
