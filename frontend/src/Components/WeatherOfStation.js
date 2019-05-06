@@ -11,13 +11,15 @@ const WeatherOfStation = props => {
   return (
     <div className={props.className}>
       <div className="circle">
-        <DonutChart height="500" data={data} />
+        <DonutChart height="700" data={data} />
       </div>
       <div className="address">
         {props.label}
       </div>
       <div className="aqi">
-        {aqi}
+        <div className="aqi-value ">
+          {aqi}
+        </div>
       </div>
       <div className="row">
         <div className="param">
