@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import WeatherOfStation from './WeatherOfStation'
 import { config } from '../config.js'
 
-class Stations extends Component {
+class Stations extends React.Component {
   constructor(props) {
     super(props);
 
