@@ -1,8 +1,6 @@
 ## About
 
-Connect raspberry pi with react js to turn on, off a led bulb. Backend folder running a flask microservice in the raspberry pi. Frontend folder is a simple react app with two buttons, calls to the microservice.
-
-You can find the blog post [here](http://chamoda.com), expains all the details from configuring circuit to setting up the microservice
+Connect raspberry pi with react js to display air params for neareast stations. Backend folder running a flask microservice in the raspberry pi. Frontend folder is a simple react app with two buttons, calls to the microservice.
 
 ## Backend setup
 
