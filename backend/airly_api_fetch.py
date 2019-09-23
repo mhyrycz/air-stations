@@ -1,88 +1,77 @@
-#pip3 install requests
-#pip3 install geocoder
-
 import requests
 import json
-from airly_credentials import headers
+from airly_credentials import headers, api_address, my_stations
 
-# auth
-
-api_address = 'https://airapi.airly.eu/v2/'
- 
-headers = {
-    'Accept': 'application/json',
-    'apikey': 'yvK3KkJPex9PJYS3n2reZ1L2c7GUNhas',
-}
-
-params = (
-    ('lat', '50.04951'),
-    ('lng', '19.93734'),
-    ('maxDistanceKM', '1'),
-    ('maxResults', '3'),
-)
-
-def get_air_stations():
-
+def get_nearest_air_stations(lat,lng, distance):
+    params = (
+        ('lat', lat),
+        ('lng', lng),
+        ('maxDistanceKM', distance),
+        ('maxResults', '3'),
+    )
     stations_info = requests.get('{}installations/nearest'.format(api_address), headers=headers, params=params).content.decode("utf-8")
 
     stations = []
 
     for station in json.loads(stations_info):
-        station_adress = station["address"]
-        combined_address = station_adress["city"] + " " + station_adress["street"] + " " + station_adress["number"]
-        stations.append(
-            {
-                "id": station["id"],
-                "address": combined_address
-            }
-        )
-
+        stations.append(station["id"])
     return stations
 
 
-def get_air_params():
+def get_measurements(id):
+    measurements = requests.get('{}measurements/installation?installationId={}'.format(
+        api_address, id), headers=headers).content
+    measurements_decoded = json.loads(measurements.decode(
+        "utf-8"))
+    return measurements_decoded
 
-    stations = [
-        {
-            "address": "Kordeckiego 9",
-            "id": 820
-        },
-        {
-            "address": "Slowackiego 44",
-            "id": 179
-        },
-        {
-            "address": "Puszkarska 7j",
-            "id": 1026
-        },
-    ]
-   
+
+def get_highest_aqi_station(lat, lng, distance):
+    stations = get_nearest_air_stations(lat, lng, distance)
+    aqis = []
+    for station in stations:
+        measurements = get_measurements(station)
+        aqi = measurements["current"]["indexes"][0]["value"]
+        if aqi is not None:
+            aqis.append(aqi)
+    index_of_stations_list = aqis.index(max(aqis))
+    return stations[index_of_stations_list] 
+
+
+def important_stations():
+    stations = []
+    for station in my_stations:
+        airly_station = {
+            "address": station["address"],
+            "id": get_highest_aqi_station(station["coordinates"]["lat"], station["coordinates"]["lng"], station["distance_from_station"])
+        }
+        stations.append(airly_station)
+    return stations
+
+def get_specific_param(air_param, otherParams):
+    return next(param["value"] for param in otherParams if param["name"]
+         == air_param) if otherParams else "unknown"
+
+def get_air_params():
     air_params = []
 
-    for station in stations:
-        measurements = requests.get('{}measurements/installation?installationId={}'.format(api_address, station["id"]), headers=headers).content
-        aqi = json.loads(measurements.decode("utf-8"))["current"]["indexes"][0]
-        aqi_value = aqi["value"]
-        aqi_color = aqi["color"]
-        otherParams = json.loads(measurements.decode("utf-8"))["current"]["values"] 
-        address = station["address"]
-        airPressure = next(param["value"] for param in otherParams if param["name"] == "PRESSURE") if otherParams else "unknown"
-        temperature = next(param["value"] for param in otherParams if param["name"] == "TEMPERATURE") if otherParams else "unknown"
-        humidity = next(param["value"] for param in otherParams if param["name"] == "HUMIDITY") if otherParams else "unknown"
+    for station in important_stations():
+        measurements = get_measurements(station["id"])
+        aqi = measurements["current"]["indexes"][0]
+        otherParams = measurements["current"]["values"]
 
         station_data = {
-            "address": address, 
+            "address": station["address"],
             "air": {
                 "aqi": {
-                            "value": aqi_value,
-                            "color": aqi_color,
+                            "value": aqi["value"],
+                            "color": aqi["color"],
                         },
-                "airPressure": airPressure,
-                "temperature": temperature,
-                "humidity": humidity,
+                "airPressure": get_specific_param("PRESSURE", otherParams),
+                "temperature": get_specific_param("TEMPERATURE", otherParams),
+                "humidity": get_specific_param("HUMIDITY", otherParams),
             }
         }
-
         air_params.append(station_data)
 
     return air_params
