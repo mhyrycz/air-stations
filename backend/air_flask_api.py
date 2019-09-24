@@ -1,6 +1,3 @@
-# sudo pip install flask
-# FLASK_APP=air_flask_api flask run --host=0.0.0.0
-
 from flask import Flask, jsonify
 import json
 import airly_api_fetch as airly_api_fetch
