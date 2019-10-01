@@ -1,24 +1,30 @@
 import miio
 from miio.airpurifier import AirPurifier, OperationMode
+from xiaomi_credentials import my_xiaomi
 
 
-def establish_connection(xiaomi_type, ip, token):
-    device = xiaomi_type(ip=f'{ip}',
-                         token=f'{token}',
-                         start_id=0,
-                         debug=0,
-                         lazy_discover=True)
+def establish_connection():
+    device = miio.airpurifier.AirPurifier(ip=my_xiaomi['ip'],
+                                          token=my_xiaomi['token'],
+                                          start_id=0,
+                                          debug=0,
+                                          lazy_discover=True)
     return device
 
 
 def check_air_at_home_and_decide(air_outside):
-    device = establish_connection(miio.airpurifier.AirPurifier,
-                                  '192.168.0.206', 'e3aae83f4464e44bea3584363c6b2de6')
-
+    device = establish_connection()
     if(air_outside >= 40):
-        if device.status().aqi > 10:
+        if device.status().aqi > 30:
             device.on()
+            device.set_mode(OperationMode.Favorite)
+        elif device.status().aqi > 20:
+            device.on()
+            device.set_mode(OperationMode.Auto)
         else:
             device.off()
     else:
         device.off()
+
+
+check_air_at_home_and_decide(40)

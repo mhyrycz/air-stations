@@ -3,5 +3,11 @@
 #airly credentials
 airly_credentials.py
 
+#xiaomi credentials
+xiaomi_credentials.py
+
+# mock data
+air_flask_api_mock_data.py
+
 #python generated files 
 *.pyc
