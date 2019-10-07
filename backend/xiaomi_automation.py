@@ -18,13 +18,10 @@ def check_air_at_home_and_decide(air_outside):
         if device.status().aqi > 30:
             device.on()
             device.set_mode(OperationMode.Favorite)
-        elif device.status().aqi > 20:
+        elif device.status().aqi > 15:
             device.on()
             device.set_mode(OperationMode.Auto)
         else:
             device.off()
     else:
         device.off()
-
-
-check_air_at_home_and_decide(40)

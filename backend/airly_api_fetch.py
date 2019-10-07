@@ -1,6 +1,6 @@
 import requests
 import json
-from airly_credentials import headers, api_address, my_stations
+from airly_credentials import headers, api_address, my_locations
 from xiaomi_automation import check_air_at_home_and_decide
 
 
@@ -22,6 +22,7 @@ def get_nearest_air_stations(lat, lng, distance):
 
 
 def get_measurements(id):
+    print("dupa")
     measurements = requests.get('{}measurements/installation?installationId={}'.format(
         api_address, id), headers=headers).content
     measurements_decoded = json.loads(measurements.decode(
@@ -30,25 +31,30 @@ def get_measurements(id):
 
 
 def get_highest_aqi_station(lat, lng, distance):
-    stations = get_nearest_air_stations(lat, lng, distance)
-    aqis = []
-    for station in stations:
+    nearests = get_nearest_air_stations(lat, lng, distance)
+    active_stations = []
+    for station in nearests:
         measurements = get_measurements(station)
-        aqi = measurements["current"]["indexes"][0]["value"]
-        if aqi is not None:
-            aqis.append(aqi)
-    index_of_stations_list = aqis.index(max(aqis))
-    return stations[index_of_stations_list]
+        aqi = measurements["current"]["indexes"][0]
+        if aqi["value"] is not None:
+            active_stations.append({
+                "aqi": aqi,
+                "otherParams": measurements["current"]["values"]
+            })
+    most_polluted = max(
+        [station["aqi"]["value"] for station in active_stations])
+    return [station for station in active_stations if station["aqi"]["value"] == most_polluted][0]
 
 
-def important_stations():
+def crucial_stations():
     stations = []
-    for station in my_stations:
-        airly_station = {
-            "address": station["address"],
-            "id": get_highest_aqi_station(station["coordinates"]["lat"], station["coordinates"]["lng"], station["distance_from_station"])
+    for location in my_locations:
+        the_most_polluted_station = {
+            "address": location["address"],
+            "airly_measurements": get_highest_aqi_station(
+                location["coordinates"]["lat"], location["coordinates"]["lng"], location["distance_from_station"])
         }
-        stations.append(airly_station)
+        stations.append(the_most_polluted_station)
     return stations
 
 
@@ -57,28 +63,27 @@ def get_specific_param(air_param, otherParams):
                 == air_param) if otherParams else "unknown"
 
 
-def get_air_params():
-    air_params = []
-
-    for station in important_stations():
-        measurements = get_measurements(station["id"])
-        aqi = measurements["current"]["indexes"][0]
-        otherParams = measurements["current"]["values"]
-
-        station_data = {
-            "address": station["address"],
-            "air": {
-                "aqi": {
-                    "value": aqi["value"],
-                    "color": aqi["color"],
-                },
-                "airPressure": get_specific_param("PRESSURE", otherParams),
-                "temperature": get_specific_param("TEMPERATURE", otherParams),
-                "humidity": get_specific_param("HUMIDITY", otherParams),
-            }
+def get_structured_for_api(station):
+    aqi = station["airly_measurements"]["aqi"]
+    other_params = station["airly_measurements"]["otherParams"]
+    return {
+        "address": station["address"],
+        "air": {
+            "aqi": {
+                "value": aqi["value"],
+                "color": aqi["color"],
+            },
+            "airPressure": get_specific_param("PRESSURE", other_params),
+            "temperature": get_specific_param("TEMPERATURE", other_params),
+            "humidity": get_specific_param("HUMIDITY", other_params),
         }
-        air_params.append(station_data)
+    }
 
-    check_air_at_home_and_decide(air_params[0]["air"]["aqi"]["value"])
 
-    return air_params
+def get_air_params():
+    air_near_my_locations = []
+    for station in crucial_stations():
+        air_near_my_locations.append(get_structured_for_api(station))
+    check_air_at_home_and_decide(
+        air_near_my_locations[0]["air"]["aqi"]["value"])
+    return air_near_my_locations

@@ -44,7 +44,7 @@ class Stations extends React.Component {
 
   componentDidMount() {
     this.getData();
-    this.timer = setInterval(() => this.getData(), 600000);
+    this.timer = setInterval(() => this.getData(), 1200000);
   }
 
   getData() {
