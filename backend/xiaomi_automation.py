@@ -1,6 +1,7 @@
 import miio
 from miio.airpurifier import AirPurifier, OperationMode
 from xiaomi_credentials import my_xiaomi
+from datetime import datetime
 
 
 def establish_connection():
@@ -15,12 +16,17 @@ def establish_connection():
 def check_air_at_home_and_decide(air_outside):
     device = establish_connection()
     if(air_outside >= 40):
-        if device.status().aqi > 30:
-            device.on()
-            device.set_mode(OperationMode.Favorite)
-        elif device.status().aqi > 15:
-            device.on()
-            device.set_mode(OperationMode.Auto)
+        if datetime.now().hour in range(16, 23):
+            if device.status().aqi > 30:
+                device.on()
+                device.set_mode(OperationMode.Favorite)
+            elif device.status().aqi > 15:
+                device.on()
+                device.set_mode(OperationMode.Auto)
+            else:
+                device.off()
+        if datetime.now().hour in range(23, 7):
+            device.set_mode(OperationMode.Silent)
         else:
             device.off()
     else:
