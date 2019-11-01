@@ -22,7 +22,6 @@ def get_nearest_air_stations(lat, lng, distance):
 
 
 def get_measurements(id):
-    print("dupa")
     measurements = requests.get('{}measurements/installation?installationId={}'.format(
         api_address, id), headers=headers).content
     measurements_decoded = json.loads(measurements.decode(
