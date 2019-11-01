@@ -15,8 +15,9 @@ def establish_connection():
 
 def check_air_at_home_and_decide(air_outside):
     device = establish_connection()
+    current_hour = datetime.now().hour
     if(air_outside >= 40):
-        if datetime.now().hour in range(16, 23):
+        if current_hour in range(16, 23):
             if device.status().aqi > 30:
                 device.on()
                 device.set_mode(OperationMode.Favorite)
@@ -25,7 +26,7 @@ def check_air_at_home_and_decide(air_outside):
                 device.set_mode(OperationMode.Auto)
             else:
                 device.off()
-        if datetime.now().hour in range(23, 7):
+        if current_hour == 23 or current_hour in range(0, 8):
             device.set_mode(OperationMode.Silent)
         else:
             device.off()
